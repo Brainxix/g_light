@@ -1,81 +1,97 @@
 import { useState } from 'react';
+import { API_BASE } from '../api.js';
 
+// Values must match ContactSubmission.SERVICE_CHOICES in the backend
+// until the backend is updated for the new capability list.
 const SERVICE_OPTIONS = [
-  'Home appliance installation',
-  'Interior decoration',
-  'Solar installation & maintenance',
-  'Full conduit wiring',
-  'Half conduit wiring',
-  'Maintenance / other',
+  { value: 'appliance', label: 'Home appliance installation' },
+  { value: 'interior', label: 'Interior decoration' },
+  { value: 'solar', label: 'Solar installation & maintenance' },
+  { value: 'conduit_full', label: 'Full conduit wiring' },
+  { value: 'conduit_half', label: 'Half conduit wiring' },
+  { value: 'maintenance', label: 'Maintenance / other' },
 ];
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [form, setForm] = useState({ name: '', phone: '', email: '', service: '', message: '' });
 
-  function handleSubmit(e) {
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    // No backend yet — replace with a real fetch/POST (Formspree or Django)
-    // before calling setSubmitted(true).
-    setSubmitted(true);
+    setStatus('sending');
+    try {
+      const res = await fetch(`${API_BASE}/api/contact/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      setStatus('sent');
+    } catch {
+      setStatus('error');
+    }
   }
 
   return (
     <>
-      <section className="page-hero">
-        <div className="eyebrow">Get in touch</div>
-        <h1>Contact</h1>
-        <p>Tell us what you need and we'll get back to you with a quote.</p>
+      <section className="page-hero wrap">
+        <h1>Start a project</h1>
+        <p>Tell us what you're building and we'll get back to you.</p>
       </section>
 
-      <div className="contact-grid">
-        {submitted ? (
-          <div className="contact-success">
-            Thanks — your request has been noted. We'll get back to you shortly.
-          </div>
-        ) : (
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <label htmlFor="name">Name</label>
-              <input id="name" name="name" type="text" required />
-            </div>
-            <div className="form-row">
-              <label htmlFor="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" required />
-            </div>
-            <div className="form-row">
-              <label htmlFor="email">Email</label>
-              <input id="email" name="email" type="email" required />
-            </div>
-            <div className="form-row">
-              <label htmlFor="service">Service needed</label>
-              <select id="service" name="service" defaultValue="">
-                <option value="" disabled>Select a service</option>
-                {SERVICE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div className="form-row">
-              <label htmlFor="message">Message</label>
-              <textarea id="message" name="message" required />
-            </div>
-            <button type="submit" className="btn-primary">Send request</button>
-          </form>
-        )}
+      <section className="wrap section" style={{ paddingTop: 0 }}>
+        <div className="contact-grid">
+          {status === 'sent' ? (
+            <div className="notice">Thanks — your request has been sent. We'll be in touch shortly.</div>
+          ) : (
+            <form className="contact-form" onSubmit={handleSubmit}>
+              {status === 'error' && (
+                <div className="notice error">Something went wrong sending your request. Please try again.</div>
+              )}
+              <div className="form-row">
+                <label htmlFor="name">Name</label>
+                <input id="name" name="name" type="text" value={form.name} onChange={handleChange} required />
+              </div>
+              <div className="form-row">
+                <label htmlFor="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} required />
+              </div>
+              <div className="form-row">
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required />
+              </div>
+              <div className="form-row">
+                <label htmlFor="service">Type of project</label>
+                <select id="service" name="service" value={form.service} onChange={handleChange} required>
+                  <option value="">Select…</option>
+                  {SERVICE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-row">
+                <label htmlFor="message">Project details</label>
+                <textarea id="message" name="message" value={form.message} onChange={handleChange} required />
+              </div>
+              <button type="submit" className="btn btn-primary" disabled={status === 'sending'}>
+                {status === 'sending' ? 'Sending…' : 'Send request'}
+              </button>
+            </form>
+          )}
 
-        <div className="contact-info">
-          <div className="contact-info-block">
-            <h3>Phone</h3>
-            <p>(555) 016-4420</p>
-          </div>
-          <div className="contact-info-block">
-            <h3>Hours</h3>
-            <p>Mon–Sat, 7am–7pm</p>
-          </div>
-          <div className="contact-info-block">
-            <h3>Service area</h3>
-            <p>Residential and commercial jobs across the local area.</p>
-          </div>
+          <aside className="contact-aside">
+            <h2>What to include</h2>
+            <ul>
+              <li>Where the project is located</li>
+              <li>The type and rough size of the building or system</li>
+              <li>What you want to achieve</li>
+              <li>Your preferred timeline</li>
+            </ul>
+          </aside>
         </div>
-      </div>
+      </section>
     </>
   );
 }

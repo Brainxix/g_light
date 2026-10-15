@@ -1,22 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Reveal from '../components/Reveal.jsx';
 
-// Placeholder data — once the Django backend is set up, replace this with:
-//   const [projects, setProjects] = useState([]);
-//   useEffect(() => {
-//     fetch('http://localhost:8000/api/projects/')
-//       .then((res) => res.json())
-//       .then(setProjects);
-//   }, []);
-const PROJECTS = [
-  { id: 1, title: 'Kitchen appliance install', category: 'appliance' },
-  { id: 2, title: 'Living room lighting redesign', category: 'interior' },
-  { id: 3, title: 'Rooftop solar array', category: 'solar' },
-  { id: 4, title: 'Full conduit rewire', category: 'conduit' },
-  { id: 5, title: 'Water heater install', category: 'appliance' },
-  { id: 6, title: 'Accent lighting, dining room', category: 'interior' },
-  { id: 7, title: 'Solar panel maintenance visit', category: 'solar' },
-  { id: 8, title: 'Half conduit upgrade', category: 'conduit' },
-];
+const API_BASE = 'http://127.0.0.1:8000';
 
 const FILTERS = [
   { label: 'All', value: 'all' },
@@ -28,9 +13,29 @@ const FILTERS = [
 
 export default function Gallery() {
   const [active, setActive] = useState('all');
+  const [projects, setProjects] = useState([]);
+  const [status, setStatus] = useState('loading'); // 'loading' | 'ready' | 'error'
 
-  const visible =
-    active === 'all' ? PROJECTS : PROJECTS.filter((p) => p.category === active);
+  useEffect(() => {
+    setStatus('loading');
+    const url =
+      active === 'all'
+        ? `${API_BASE}/api/projects/`
+        : `${API_BASE}/api/projects/?category=${active}`;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error('Request failed');
+        return res.json();
+      })
+      .then((data) => {
+        setProjects(data);
+        setStatus('ready');
+      })
+      .catch(() => {
+        setStatus('error');
+      });
+  }, [active]);
 
   return (
     <>
@@ -52,17 +57,45 @@ export default function Gallery() {
         ))}
       </div>
 
-      <div className="gallery-grid">
-        {visible.map((project) => (
-          <div className={`gallery-card${project.category === 'solar' ? ' solar' : ''}`} key={project.id}>
-            <div className="thumb">Photo placeholder</div>
-            <div className="info">
-              <h4>{project.title}</h4>
-              <span>{project.category}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      {status === 'loading' && (
+        <p className="wrap" style={{ padding: '0 24px 40px', color: 'rgba(20,25,43,0.6)' }}>
+          Loading photos…
+        </p>
+      )}
+
+      {status === 'error' && (
+        <p className="wrap" style={{ padding: '0 24px 40px', color: 'rgba(20,25,43,0.6)' }}>
+          Couldn't load the gallery right now. Make sure the backend server is running.
+        </p>
+      )}
+
+      {status === 'ready' && projects.length === 0 && (
+        <p className="wrap" style={{ padding: '0 24px 40px', color: 'rgba(20,25,43,0.6)' }}>
+          No photos in this category yet.
+        </p>
+      )}
+
+      {status === 'ready' && projects.length > 0 && (
+        <div className="gallery-grid" key={active}>
+          {projects.map((project, i) => (
+            <Reveal key={project.id} delay={i * 40}>
+              <div className={`gallery-card${project.category === 'solar' ? ' solar' : ''}`}>
+                <div className="thumb" style={{ background: 'none' }}>
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+                <div className="info">
+                  <h4>{project.title}</h4>
+                  <span>{project.category}</span>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      )}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import CTASection from '../components/CTASection.jsx';
+import Reveal from '../components/Reveal.jsx';
 
 const SERVICES = [
   {
@@ -43,17 +44,19 @@ export default function Services() {
       </section>
 
       <section className="service-detail-list">
-        {SERVICES.map((service) => (
-          <div className="service-detail" key={service.tag}>
-            <div className="tag">{service.tag}</div>
-            <div>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-              <ul>
-                {service.items.map((item) => <li key={item}>{item}</li>)}
-              </ul>
+        {SERVICES.map((service, i) => (
+          <Reveal key={service.tag} delay={i * 60}>
+            <div className="service-detail">
+              <div className="tag">{service.tag}</div>
+              <div>
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <ul>
+                  {service.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </div>
             </div>
-          </div>
+          </Reveal>
         ))}
       </section>
 

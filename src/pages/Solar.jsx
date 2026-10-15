@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import CTASection from '../components/CTASection.jsx';
+import Reveal from '../components/Reveal.jsx';
 
 const INCLUDED = [
   { title: 'Installation', description: 'Panel setup, mounting, and wiring sized to your property and power needs, installed to code.' },
@@ -19,6 +21,8 @@ const FAQS = [
 ];
 
 export default function Solar() {
+  const [openFaq, setOpenFaq] = useState(null);
+
   return (
     <>
       <section className="page-hero">
@@ -27,42 +31,60 @@ export default function Solar() {
         <p>From first assessment to a system that just keeps running — installed and maintained by the same team.</p>
       </section>
 
-      <section className="included-grid">
-        {INCLUDED.map((item) => (
-          <div className="included-card" key={item.title}>
-            <div className="icon" />
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </div>
-        ))}
-      </section>
+      <Reveal>
+        <section className="included-grid">
+          {INCLUDED.map((item) => (
+            <div className="included-card" key={item.title}>
+              <div className="icon" />
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
+          ))}
+        </section>
+      </Reveal>
 
-      <section className="section">
-        <div className="section-head wrap"><h2>How it works</h2></div>
-        <div className="process-list">
-          {PROCESS.map((p) => (
-            <div className="process-item" key={p.step}>
-              <div className="step">{p.step}</div>
-              <div>
-                <h4>{p.title}</h4>
-                <p>{p.description}</p>
+      <Reveal>
+        <section className="section">
+          <div className="section-head wrap"><h2>How it works</h2></div>
+          <div className="process-list">
+            {PROCESS.map((p) => (
+              <div className="process-item" key={p.step}>
+                <div className="step">{p.step}</div>
+                <div>
+                  <h4>{p.title}</h4>
+                  <p>{p.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      </Reveal>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="section-head wrap"><h2>Common questions</h2></div>
-        <div className="faq-list">
-          {FAQS.map((item) => (
-            <div className="faq-item" key={item.q}>
-              <h4>{item.q}</h4>
-              <p>{item.a}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Reveal>
+        <section className="section" style={{ paddingTop: 0 }}>
+          <div className="section-head wrap"><h2>Common questions</h2></div>
+          <div className="faq-list">
+            {FAQS.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div
+                  className={`faq-item${isOpen ? ' open' : ''}`}
+                  key={item.q}
+                  onClick={() => setOpenFaq(isOpen ? null : i)}
+                >
+                  <div className="faq-question">
+                    <h4>{item.q}</h4>
+                    <span className="faq-icon">+</span>
+                  </div>
+                  <div className="faq-answer">
+                    <p>{item.a}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
 
       <CTASection
         heading="Thinking about going solar?"

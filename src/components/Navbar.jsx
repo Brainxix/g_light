@@ -1,44 +1,51 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/g-light-logo.png';
-
-const NAV_ITEMS = [
-  { label: 'Home', to: '/' },
-  { label: 'Services', to: '/services' },
-  { label: 'Solar', to: '/solar' },
-  { label: 'About', to: '/about' },
-  { label: 'Gallery', to: '/gallery' },
-];
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import mark from '../assets/g-light-mark.png';
+import { BRAND, NAV_ITEMS } from '../content.js';
 
 export default function Navbar() {
-  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Close the mobile menu whenever the page changes.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
-    <header className="navbar">
-      <div className="navbar-inner">
-        <Link to="/" className="brand" onClick={() => setOpen(false)}>
-          <span className="brand-logo">
-            <img src={logo} alt="G-Light Electrical" />
+    <header className="site-header">
+      <div className="header-inner">
+        <Link to="/" className="brand" aria-label={`${BRAND.name} home`}>
+          <img className="brand-mark" src={mark} alt="" />
+          <span className="brand-text">
+            <span className="brand-name">{BRAND.name}</span>
+            <span className="brand-sub">{BRAND.descriptor}</span>
           </span>
         </Link>
-        <nav className="nav-links">
+
+        <nav className="nav-links" aria-label="Main">
           {NAV_ITEMS.map((item) => (
-            <Link
+            <NavLink
               key={item.to}
               to={item.to}
-              className={pathname === item.to ? 'active' : ''}
+              end={item.to === '/'}
+              className={({ isActive }) => (isActive ? 'active' : '')}
             >
               {item.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
-        <Link to="/contact" className="nav-cta">
-          Get a quote
+
+        <Link to="/contact" className="btn btn-primary btn-sm header-cta">
+          Start a project
         </Link>
+
         <button
+          type="button"
           className="nav-toggle"
-          aria-label="Toggle menu"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((o) => !o)}
         >
           <span />
@@ -46,14 +53,15 @@ export default function Navbar() {
           <span />
         </button>
       </div>
-      <nav className={`mobile-menu${open ? ' open' : ''}`}>
+
+      <nav id="mobile-menu" className={`mobile-menu${open ? ' open' : ''}`} aria-label="Mobile">
         {NAV_ITEMS.map((item) => (
-          <Link key={item.to} to={item.to} onClick={() => setOpen(false)}>
+          <Link key={item.to} to={item.to}>
             {item.label}
           </Link>
         ))}
-        <Link to="/contact" onClick={() => setOpen(false)}>
-          Get a quote
+        <Link to="/contact" className="btn btn-primary" style={{ marginTop: 16 }}>
+          Start a project
         </Link>
       </nav>
     </header>
