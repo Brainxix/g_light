@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
+import ScrollProgress from './components/ScrollProgress.jsx';
 import Home from './pages/Home.jsx';
 import Capabilities from './pages/Capabilities.jsx';
 import Projects from './pages/Projects.jsx';
@@ -23,12 +24,40 @@ function ScrollToTop() {
   return null;
 }
 
+// Cursor-following glow on cards: sets --mx / --my on the hovered element.
+function useSpotlight() {
+  useEffect(() => {
+    const sel = '.cap, .proj-row, .project-card, .why-item';
+    const onMove = (e) => {
+      const el = e.target.closest && e.target.closest(sel);
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    };
+    document.addEventListener('pointermove', onMove, { passive: true });
+    return () => document.removeEventListener('pointermove', onMove);
+  }, []);
+}
+
+// Fades each page in when the route changes.
+function Page({ children }) {
+  const { pathname } = useLocation();
+  return (
+    <main key={pathname} className="page">
+      {children}
+    </main>
+  );
+}
+
 export default function App() {
+  useSpotlight();
   return (
     <BrowserRouter>
+      <ScrollProgress />
       <ScrollToTop />
       <Navbar />
-      <main>
+      <Page>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/capabilities" element={<Capabilities />} />
@@ -40,7 +69,7 @@ export default function App() {
           <Route path="/gallery" element={<Navigate to="/projects" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </main>
+      </Page>
       <Footer />
     </BrowserRouter>
   );

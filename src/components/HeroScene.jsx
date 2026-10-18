@@ -143,12 +143,13 @@ export default function HeroScene() {
       <rect width={W} height="700" fill="url(#hs-sky)" />
 
       {STARS.map((s) => (
-        <circle key={s.key} cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={s.r.toFixed(2)} fill="#cfe0ff" opacity={s.o.toFixed(2)} />
+        <circle key={s.key} className="hero-star" style={{ animationDelay: `${(s.key % 9) * 0.55}s` }} cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={s.r.toFixed(2)} fill="#cfe0ff" opacity={s.o.toFixed(2)} />
       ))}
 
       {/* The G ring, rising over the horizon */}
-      <circle cx={VX} cy="265" r="218" fill="none" stroke="#2f7bff" strokeOpacity="0.22" strokeWidth="1.2" />
+      <circle className="hero-ring-outer" cx={VX} cy="265" r="218" fill="none" stroke="#2f7bff" strokeOpacity="0.22" strokeWidth="1.2" />
       <path
+        className="hero-ring-glow"
         d="M941.5 158.9 A185 185 0 1 0 975 265 L860 265"
         fill="none"
         stroke="url(#hs-ring)"
@@ -156,7 +157,7 @@ export default function HeroScene() {
         opacity="0.55"
         filter="url(#hs-blur)"
       />
-      <path d="M941.5 158.9 A185 185 0 1 0 975 265 L860 265" fill="none" stroke="url(#hs-ring)" strokeWidth="14" opacity="0.95" />
+      <path className="hero-ring-draw" pathLength="1" d="M941.5 158.9 A185 185 0 1 0 975 265 L860 265" fill="none" stroke="url(#hs-ring)" strokeWidth="14" strokeLinecap="round" opacity="0.95" />
 
       <rect x="0" y="0" width={W} height={HORIZON} fill="url(#hs-horizon)" />
       <rect x="0" y={HORIZON} width={W} height={700 - HORIZON} fill="url(#hs-ground)" />

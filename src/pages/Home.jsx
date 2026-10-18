@@ -3,19 +3,33 @@ import Reveal from '../components/Reveal.jsx';
 import HeroScene from '../components/HeroScene.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
 import Principles from '../components/Principles.jsx';
+import CountUp from '../components/CountUp.jsx';
+import Circuit from '../components/Circuit.jsx';
+import CapIcon from '../components/CapIcon.jsx';
 import CTASection from '../components/CTASection.jsx';
 import { HERO, STATEMENT, CAPABILITIES, FEATURED_PROJECTS, METRICS, HOME_CTA } from '../content.js';
 
 export default function Home() {
+  // Hero artwork drifts slightly against the pointer.
+  const onHeroMove = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    e.currentTarget.style.setProperty('--px', x.toFixed(3));
+    e.currentTarget.style.setProperty('--py', y.toFixed(3));
+  };
+
   return (
     <>
-      <section className="hero">
+      <section className="hero" onPointerMove={onHeroMove}>
         <HeroScene />
         <div className="hero-inner">
           <div className="hero-copy">
             <h1>
-              {HERO.headline.map((line) => (
-                <span key={line}>{line}</span>
+              {HERO.headline.map((line, i) => (
+                <span className="line" key={line}>
+                  <span style={{ animationDelay: `${0.25 + i * 0.18}s` }}>{line}</span>
+                </span>
               ))}
             </h1>
             <p className="lead">{HERO.lead}</p>
@@ -49,6 +63,8 @@ export default function Home() {
         </section>
       </Reveal>
 
+      <Circuit />
+
       <Reveal>
         <section className="section wrap">
           <div className="section-head">
@@ -61,7 +77,7 @@ export default function Home() {
                 to={`/capabilities#${c.slug}`}
                 className={`cap${c.accent === 'amber' ? ' is-solar' : ''}`}
               >
-                <span className="cap-mark" />
+                <CapIcon slug={c.slug} />
                 <h3>{c.title}</h3>
                 <p>{c.short}</p>
               </Link>
@@ -87,6 +103,8 @@ export default function Home() {
         </section>
       </Reveal>
 
+      <Circuit />
+
       <Reveal>
         <section className="metrics">
           <div className="wrap metrics-inner">
@@ -96,7 +114,7 @@ export default function Home() {
             <div className="metric-grid">
               {METRICS.items.map((m) => (
                 <div className="metric" key={m.label}>
-                  <strong>{m.value}</strong>
+                  <strong><CountUp value={m.value} /></strong>
                   <span>{m.label}</span>
                 </div>
               ))}

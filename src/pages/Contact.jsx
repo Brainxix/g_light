@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { API_BASE } from '../api.js';
+import { CONTACT } from '../content.js';
 
 // Values must match ContactSubmission.SERVICE_CHOICES in the backend
 // until the backend is updated for the new capability list.
@@ -82,7 +83,24 @@ export default function Contact() {
           )}
 
           <aside className="contact-aside">
-            <h2>What to include</h2>
+            <h2>Talk to us directly</h2>
+            <ul className="contact-methods">
+              <li>
+                <span>WhatsApp</span>
+                <a className="btn btn-whatsapp" href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
+                  Chat on WhatsApp
+                </a>
+              </li>
+              <li>
+                <span>Phone</span>
+                <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
+              </li>
+              <li>
+                <span>Email</span>
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              </li>
+            </ul>
+            <h2 className="aside-sub">What to include</h2>
             <ul>
               <li>Where the project is located</li>
               <li>The type and rough size of the building or system</li>

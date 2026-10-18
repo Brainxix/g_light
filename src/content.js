@@ -157,3 +157,15 @@ export const HOME_CTA = {
   primary: { label: 'Start your project', to: '/contact' },
   secondary: { label: 'Talk to an engineer', to: '/contact' },
 };
+
+// Public contact details. WhatsApp uses the international form of the number
+// (Nigeria +234, leading 0 dropped) as wa.me requires.
+const PHONE_LOCAL = '09033367478';
+const PHONE_INTL = '234' + PHONE_LOCAL.slice(1);
+
+export const CONTACT = {
+  email: 'Sylvanusgoodluck2019@gmail.com',
+  phone: PHONE_LOCAL,
+  phoneHref: `tel:+${PHONE_INTL}`,
+  whatsappHref: `https://wa.me/${PHONE_INTL}?text=${encodeURIComponent('Hello G-LIGHT, I would like to discuss a project.')}`,
+};

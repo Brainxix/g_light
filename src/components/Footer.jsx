@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import mark from '../assets/g-light-mark.png';
-import { BRAND, NAV_ITEMS, CAPABILITIES } from '../content.js';
+import { BRAND, NAV_ITEMS, CAPABILITIES, CONTACT } from '../content.js';
 
 export default function Footer() {
   return (
@@ -40,6 +40,15 @@ export default function Footer() {
                   <Link to={`/capabilities#${c.slug}`}>{c.title}</Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li><a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              <li><a href={CONTACT.phoneHref}>{CONTACT.phone}</a></li>
+              <li><a href={`mailto:${CONTACT.email}`}>Email us</a></li>
             </ul>
           </div>
         </div>

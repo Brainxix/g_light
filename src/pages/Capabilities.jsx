@@ -1,4 +1,5 @@
 import Reveal from '../components/Reveal.jsx';
+import CapIcon from '../components/CapIcon.jsx';
 import CTASection from '../components/CTASection.jsx';
 import { CAPABILITIES } from '../content.js';
 
@@ -15,7 +16,7 @@ export default function Capabilities() {
           <Reveal key={c.slug}>
             <article id={c.slug} className={`cap-detail${c.accent === 'amber' ? ' is-solar' : ''}`}>
               <div>
-                <span className="cap-mark" />
+                <CapIcon slug={c.slug} />
                 <h2>{c.title}</h2>
               </div>
               <div>
