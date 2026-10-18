@@ -31,7 +31,7 @@ export default function Projects() {
   return (
     <>
       <section className="page-hero wrap">
-        <h1>Engineered in the field</h1>
+        <h1>Completed projects</h1>
         <p>Real projects. Real systems. Real performance.</p>
       </section>
 

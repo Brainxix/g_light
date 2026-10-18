@@ -89,7 +89,7 @@ export default function Home() {
       <Reveal>
         <section className="section wrap">
           <div className="section-head">
-            <h2>Engineered in the field</h2>
+            <h2>Completed projects</h2>
             <p>Real projects. Real systems. Real performance.</p>
           </div>
           <div className="proj-list">
