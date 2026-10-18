@@ -1667,3 +1667,162 @@ img {
     20% { box-shadow: none; border-color: var(--blue-soft); }
   }
 }
+
+/* ======================================================================
+   Depth (v4): the hero scene is split into layers that move by different
+   amounts, which is what makes the towers read as 3D
+   ====================================================================== */
+.depth {
+  transform-box: view-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-scene {
+    transform: scale(1.04);
+    transition: none;
+  }
+
+  .depth {
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .depth-far {
+    transform: translate(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -3px));
+  }
+
+  .depth-mid {
+    transform: translate(calc(var(--px, 0) * -14px), calc(var(--py, 0) * -7px));
+  }
+
+  .depth-near {
+    transform: translate(calc(var(--px, 0) * -30px), calc(var(--py, 0) * -12px));
+  }
+
+  /* A slow idle sway so the depth shows even without a mouse (phones) */
+  .sway-mid {
+    animation: sway-mid 14s ease-in-out infinite alternate;
+  }
+
+  .sway-near {
+    animation: sway-near 10s ease-in-out infinite alternate;
+  }
+
+  @keyframes sway-mid {
+    from { transform: translateX(-3px); }
+    to { transform: translateX(3px); }
+  }
+
+  @keyframes sway-near {
+    from { transform: translateX(-8px); }
+    to { transform: translateX(8px); }
+  }
+}
+
+/* ======================================================================
+   The G ring (v5): dials, racing current, electric arcs, light pool
+   ====================================================================== */
+.dial,
+.hero-wave,
+.hero-terminal {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Everything that moves starts hidden, so reduced-motion users see a calm ring */
+.hero-wave,
+.hero-comet,
+.hero-zap,
+.hero-terminal {
+  opacity: 0;
+}
+
+.hero-pool {
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dial-ticks {
+    animation: spin 90s linear infinite;
+  }
+
+  .dial-arc {
+    animation: spin 46s linear infinite reverse;
+  }
+
+  .hero-wave {
+    animation: wave 5.2s ease-out 2.6s infinite;
+  }
+
+  .hero-wave-2 {
+    animation-delay: 5.2s;
+  }
+
+  .hero-comet {
+    stroke-dasharray: 0.07 0.93;
+    animation: fade-in 0.6s ease 2.4s forwards, comet 3.6s linear 2.4s infinite;
+  }
+
+  .hero-comet-2 {
+    animation-delay: 2.4s, 4.2s;
+  }
+
+  .hero-terminal {
+    animation: terminal 2.6s ease-in-out 2.4s infinite;
+  }
+
+  .hero-terminal-2 {
+    animation-delay: 3.7s;
+  }
+
+  .hero-zap {
+    animation: zap 5.6s linear 3s infinite;
+  }
+
+  .hero-zap-2 {
+    animation-duration: 8.3s;
+    animation-delay: 5s;
+  }
+
+  .hero-pool {
+    animation: pool 4s ease-in-out 2.6s infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes wave {
+    0% { opacity: 0.5; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+
+  @keyframes comet {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -1; }
+  }
+
+  @keyframes fade-in {
+    to { opacity: 1; }
+  }
+
+  @keyframes terminal {
+    0%, 100% { opacity: 0.15; transform: scale(0.7); }
+    50% { opacity: 0.95; transform: scale(1.5); }
+  }
+
+  @keyframes zap {
+    0%, 12%, 100% { opacity: 0; }
+    1% { opacity: 1; }
+    3% { opacity: 0.1; }
+    5% { opacity: 1; }
+    7% { opacity: 0.2; }
+    9% { opacity: 0.9; }
+    11% { opacity: 0; }
+  }
+
+  @keyframes pool {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.9; }
+  }
+}
