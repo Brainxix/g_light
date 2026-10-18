@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import ScrollProgress from './components/ScrollProgress.jsx';
+import Sparks from './components/Sparks.jsx';
 import Home from './pages/Home.jsx';
 import Capabilities from './pages/Capabilities.jsx';
 import Projects from './pages/Projects.jsx';
@@ -55,6 +56,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollProgress />
+      <Sparks />
       <ScrollToTop />
       <Navbar />
       <Page>
