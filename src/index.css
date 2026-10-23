@@ -24,7 +24,7 @@
   --body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --maxw: 1760px;
-  --gutter: clamp(20px, 5vw, 96px);
+  --gutter: clamp(24px, 8vw, 150px);
   --header-h: 76px;
 }
 
@@ -480,7 +480,7 @@ img {
 /* ---------- Generic sections ---------- */
 
 .section {
-  padding: clamp(64px, 9vw, 120px) 0;
+  padding-block: clamp(64px, 9vw, 120px);
 }
 
 .section-head {
@@ -869,7 +869,8 @@ img {
 /* ---------- Inner pages ---------- */
 
 .page-hero {
-  padding: clamp(56px, 8vw, 104px) 0 clamp(28px, 4vw, 48px);
+  padding-top: clamp(56px, 8vw, 104px);
+  padding-bottom: clamp(28px, 4vw, 48px);
 }
 
 .page-hero h1 {
@@ -1835,4 +1836,253 @@ img {
   height: 100%;
   z-index: 40;
   pointer-events: none;
+}
+
+/* ======================================================================
+   Inner pages (v6): entrance + small touches
+   ====================================================================== */
+
+/* Heading block: a short bar, then the heading and text rise in */
+.page-hero {
+  position: relative;
+}
+
+.page-hero::before {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 14px rgba(69, 212, 255, 0.6);
+}
+
+/* A line under the heading with a pulse of current running along it */
+.page-hero::after {
+  content: '';
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line-strong), transparent 85%);
+}
+
+.page-hero > .pulse-line {
+  position: absolute;
+  left: var(--gutter);
+  bottom: -1px;
+  width: 90px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--cyan));
+  box-shadow: 0 0 14px var(--cyan);
+  opacity: 0;
+}
+
+/* Form: fields light up when focused */
+.form-row label {
+  transition: color 0.2s;
+}
+
+.form-row:focus-within label {
+  color: var(--cyan);
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  box-shadow: 0 0 0 3px rgba(69, 212, 255, 0.14), 0 0 22px rgba(69, 212, 255, 0.12);
+}
+
+/* Contact details: nudge on hover */
+.contact-aside li {
+  transition: padding-left 0.25s, color 0.25s;
+}
+
+.contact-aside li:hover {
+  padding-left: 8px;
+  color: var(--text);
+}
+
+/* Footer links slide a little */
+.footer-col a {
+  display: inline-block;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.footer-col a:hover {
+  transform: translateX(4px);
+}
+
+/* About: section headings get the same bar as elsewhere */
+.about-grid h2::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 12px rgba(69, 212, 255, 0.5);
+}
+
+/* Project cards: image eases in on hover */
+.project-card .thumb img {
+  transition: transform 0.6s ease;
+}
+
+.project-card:hover .thumb img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-hero::before {
+    animation: bar-draw 0.8s ease 0.1s both;
+  }
+
+  .page-hero > * {
+    animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .page-hero > h1 { animation-delay: 0.12s; }
+  .page-hero > p { animation-delay: 0.26s; }
+
+  .page-hero > .pulse-line {
+    animation: line-travel 6s cubic-bezier(0.4, 0, 0.2, 1) 1.2s infinite;
+  }
+
+  /* Form fields and side notes arrive one after another */
+  .reveal .contact-form .form-row,
+  .reveal .contact-form .btn,
+  .reveal .contact-aside li {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease, padding-left 0.25s, color 0.25s;
+  }
+
+  .reveal.visible .contact-form .form-row,
+  .reveal.visible .contact-form .btn,
+  .reveal.visible .contact-aside li {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal.visible .contact-form .form-row:nth-child(1) { transition-delay: 0.05s; }
+  .reveal.visible .contact-form .form-row:nth-child(2) { transition-delay: 0.12s; }
+  .reveal.visible .contact-form .form-row:nth-child(3) { transition-delay: 0.19s; }
+  .reveal.visible .contact-form .form-row:nth-child(4) { transition-delay: 0.26s; }
+  .reveal.visible .contact-form .form-row:nth-child(5) { transition-delay: 0.33s; }
+  .reveal.visible .contact-form .form-row:nth-child(6) { transition-delay: 0.4s; }
+  .reveal.visible .contact-form .form-row:nth-child(7) { transition-delay: 0.47s; }
+  .reveal.visible .contact-form .form-row:nth-child(8) { transition-delay: 0.54s; }
+  .reveal.visible .contact-form .btn { transition-delay: 0.62s; }
+  .reveal.visible .contact-aside li:nth-child(1) { transition-delay: 0.2s; }
+  .reveal.visible .contact-aside li:nth-child(2) { transition-delay: 0.32s; }
+  .reveal.visible .contact-aside li:nth-child(3) { transition-delay: 0.44s; }
+  .reveal.visible .contact-aside li:nth-child(4) { transition-delay: 0.56s; }
+
+  /* Capability detail blocks and project cards rise in turn */
+  .reveal .project-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.25s;
+  }
+
+  .reveal.visible .project-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal.visible .project-card:nth-child(3n + 1) { transition-delay: 0.05s; }
+  .reveal.visible .project-card:nth-child(3n + 2) { transition-delay: 0.17s; }
+  .reveal.visible .project-card:nth-child(3n + 3) { transition-delay: 0.29s; }
+
+  .reveal .cap-items li {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible .cap-items li {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal.visible .cap-items li:nth-child(1) { transition-delay: 0.2s; }
+  .reveal.visible .cap-items li:nth-child(2) { transition-delay: 0.27s; }
+  .reveal.visible .cap-items li:nth-child(3) { transition-delay: 0.34s; }
+  .reveal.visible .cap-items li:nth-child(4) { transition-delay: 0.41s; }
+  .reveal.visible .cap-items li:nth-child(5) { transition-delay: 0.48s; }
+  .reveal.visible .cap-items li:nth-child(6) { transition-delay: 0.55s; }
+  .reveal.visible .cap-items li:nth-child(7) { transition-delay: 0.62s; }
+
+  .reveal .about-grid h2::before,
+  .about-grid.reveal h2::before {
+    width: 0;
+  }
+
+  .reveal.visible .about-grid h2::before {
+    width: 48px;
+    transition: width 0.8s ease 0.1s;
+  }
+
+  @keyframes bar-draw {
+    from { width: 0; }
+    to { width: 56px; }
+  }
+
+  @keyframes line-travel {
+    0% { left: var(--gutter); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { left: calc(100% - var(--gutter) - 90px); opacity: 0; }
+  }
+}
+
+.page-hero {
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+/* Honeypot field for the contact form: hidden from people, visible to bots */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* Gallery cards with project details */
+.project-card .meta span {
+  display: block;
+  margin-top: 2px;
+  color: var(--blue-soft);
+}
+
+.project-card .capacity {
+  margin-top: 10px;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.project-card .desc {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal.visible .contact-form .form-row:nth-child(9) { transition-delay: 0.61s; }
+  .reveal.visible .contact-form .form-row:nth-child(10) { transition-delay: 0.68s; }
+  .reveal.visible .contact-form .btn { transition-delay: 0.78s; }
 }

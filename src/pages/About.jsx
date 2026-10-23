@@ -9,6 +9,7 @@ export default function About() {
       <section className="page-hero wrap">
         <h1>{BRAND.tagline}</h1>
         <p>G-LIGHT is an electrical and energy solutions company combining engineering, renewable energy and technical expertise.</p>
+        <span className="pulse-line" aria-hidden="true" />
       </section>
 
       <Reveal>

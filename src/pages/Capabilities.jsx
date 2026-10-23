@@ -9,6 +9,7 @@ export default function Capabilities() {
       <section className="page-hero wrap">
         <h1>What we engineer</h1>
         <p>Electrical engineering, solar energy and power systems, designed to keep homes, businesses and critical infrastructure running.</p>
+        <span className="pulse-line" aria-hidden="true" />
       </section>
 
       <section className="wrap cap-detail-list">

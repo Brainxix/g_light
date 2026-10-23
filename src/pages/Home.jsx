@@ -7,9 +7,24 @@ import CountUp from '../components/CountUp.jsx';
 import Circuit from '../components/Circuit.jsx';
 import CapIcon from '../components/CapIcon.jsx';
 import CTASection from '../components/CTASection.jsx';
+import { useApi } from '../api.js';
 import { HERO, STATEMENT, CAPABILITIES, FEATURED_PROJECTS, METRICS, HOME_CTA } from '../content.js';
 
+const toRow = (p) => ({
+  name: p.title,
+  location: p.location,
+  sector: p.sector_label,
+  description: p.description,
+});
+
 export default function Home() {
+  // Featured projects and the numbers come from the admin; the text in
+  // content.js is what shows until (or unless) the backend has any.
+  const { data: apiProjects } = useApi('/api/projects/?featured=1');
+  const { data: apiStats } = useApi('/api/stats/');
+  const featured = apiProjects.length ? apiProjects.map(toRow) : FEATURED_PROJECTS;
+  const stats = apiStats.length ? apiStats : METRICS.items;
+
   // Hero artwork drifts slightly against the pointer.
   const onHeroMove = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -90,10 +105,10 @@ export default function Home() {
         <section className="section wrap">
           <div className="section-head">
             <h2>Completed projects</h2>
-            <p>Real projects. Real systems. Real performance.</p>
+            <p>Real systems. Real performance.</p>
           </div>
           <div className="proj-list">
-            {FEATURED_PROJECTS.map((p) => (
+            {featured.map((p) => (
               <ProjectRow key={p.name} {...p} />
             ))}
           </div>
@@ -112,7 +127,7 @@ export default function Home() {
               <h2>{METRICS.heading}</h2>
             </div>
             <div className="metric-grid">
-              {METRICS.items.map((m) => (
+              {stats.map((m) => (
                 <div className="metric" key={m.label}>
                   <strong><CountUp value={m.value} /></strong>
                   <span>{m.label}</span>
