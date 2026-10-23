@@ -1,0 +1,35 @@
+# Copy these into Render's "Environment" tab. Never commit real values to Git.
+
+# --- Required on the live server ---
+DEBUG=0
+SECRET_KEY=paste-a-long-random-string-here
+PYTHON_VERSION=3.12.8
+
+# Your website's address(es), comma separated, no trailing slash
+CORS_ALLOWED_ORIGINS=https://glight-roan.vercel.app
+
+# --- Database: Supabase -> Project Settings -> Database -> Connection string -> "Session pooler" ---
+DATABASE_URL=postgresql://postgres.xxxxxxxx:YOUR-PASSWORD@aws-0-xx-xxxx-x.pooler.supabase.com:5432/postgres
+
+# --- Photos: Supabase -> Storage (a PUBLIC bucket) and Storage -> S3 Connection ---
+SUPABASE_PROJECT_REF=xxxxxxxx
+SUPABASE_BUCKET=projects
+SUPABASE_S3_KEY_ID=paste-access-key-id
+SUPABASE_S3_SECRET=paste-secret-access-key
+SUPABASE_S3_REGION=eu-west-2
+
+# --- Your admin login (created automatically on deploy) ---
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=you@example.com
+DJANGO_SUPERUSER_PASSWORD=choose-a-strong-password
+
+# --- Optional: email me/the client when a lead arrives ---
+# LEAD_NOTIFY_EMAIL=Sylvanusgoodluck2019@gmail.com
+# EMAIL_HOST=smtp.gmail.com
+# EMAIL_HOST_USER=your-gmail@gmail.com
+# EMAIL_HOST_PASSWORD=gmail-app-password
+# DEFAULT_FROM_EMAIL=G-LIGHT <your-gmail@gmail.com>
+
+# --- Later, when you have a domain ---
+# ALLOWED_HOSTS=api.yourdomain.com
+# CSRF_TRUSTED_ORIGINS=https://api.yourdomain.com
