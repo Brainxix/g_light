@@ -1,0 +1,108 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}{% endblock %}
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} gl-dashboard{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div id="content-main" class="gl-home">
+
+  <section class="gl-hero gl-in" style="--i:0">
+    <div>
+      <p class="gl-eyebrow"><span class="gl-dot"></span> System online</p>
+      <h1 class="gl-greeting" data-name="{{ user.get_short_name|default:user.get_username }}">Welcome, {{ user.get_short_name|default:user.get_username }}</h1>
+      <p class="gl-sub">Manage projects, home-page numbers and incoming leads.</p>
+    </div>
+    <div class="gl-actions">
+      <a class="gl-btn gl-btn-primary" href="{% url 'admin:gallery_project_add' %}">+ Add project</a>
+      <a class="gl-btn" href="{% url 'admin:contact_contactsubmission_changelist' %}">View leads</a>
+      {% if gl_site_url %}<a class="gl-btn" href="{{ gl_site_url }}" target="_blank" rel="noopener">View site &#8599;</a>{% endif %}
+    </div>
+  </section>
+
+  <section class="gl-stats">
+    <a class="gl-stat gl-in" style="--i:1" href="{% url 'admin:gallery_project_changelist' %}">
+      <span class="gl-stat-label">Live projects</span>
+      <span class="gl-stat-value" data-count="{{ gl_stats.projects_live }}">{{ gl_stats.projects_live }}</span>
+      <span class="gl-stat-note">{{ gl_stats.projects_total }} in total</span>
+    </a>
+    <a class="gl-stat gl-in {% if gl_stats.leads_new %}gl-hot{% endif %}" style="--i:2" href="{% url 'admin:contact_contactsubmission_changelist' %}?status__exact=new">
+      <span class="gl-stat-label">New leads</span>
+      <span class="gl-stat-value" data-count="{{ gl_stats.leads_new }}">{{ gl_stats.leads_new }}</span>
+      <span class="gl-stat-note">waiting for a reply</span>
+    </a>
+    <a class="gl-stat gl-in" style="--i:3" href="{% url 'admin:contact_contactsubmission_changelist' %}">
+      <span class="gl-stat-label">Leads this week</span>
+      <span class="gl-stat-value" data-count="{{ gl_stats.leads_week }}">{{ gl_stats.leads_week }}</span>
+      <span class="gl-stat-note">{{ gl_stats.leads_total }} all time</span>
+    </a>
+    <a class="gl-stat gl-in" style="--i:4" href="{% url 'admin:contact_contactsubmission_changelist' %}?status__exact=won">
+      <span class="gl-stat-label">Won / completed</span>
+      <span class="gl-stat-value" data-count="{{ gl_stats.leads_won }}">{{ gl_stats.leads_won }}</span>
+      <span class="gl-stat-note">jobs from leads</span>
+    </a>
+  </section>
+
+  <section class="gl-grid">
+    <div class="gl-card gl-in" style="--i:5">
+      <h2 class="gl-card-title">Lead pipeline</h2>
+      <ul class="gl-pipeline">
+        {% for s in gl_pipeline %}
+        <li>
+          <a href="{{ s.url }}">
+            <span class="gl-pl-label">{{ s.label }}</span>
+            <span class="gl-pl-bar"><i style="--w:{{ s.percent }}%"></i></span>
+            <span class="gl-pl-count">{{ s.count }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="gl-card gl-in" style="--i:6">
+      <h2 class="gl-card-title">Latest leads</h2>
+      {% if gl_recent_leads %}
+      <ul class="gl-list">
+        {% for l in gl_recent_leads %}
+        <li>
+          <a href="{% url 'admin:contact_contactsubmission_change' l.pk %}">
+            <span class="gl-li-main">{{ l.name }}<small>{{ l.get_service_display|default:"General enquiry" }}{% if l.location %} &middot; {{ l.location }}{% endif %}</small></span>
+            <span class="gl-chip gl-chip-{{ l.status }}">{{ l.get_status_display }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="gl-empty">No leads yet. They appear here when someone uses the contact form.</p>
+      {% endif %}
+    </div>
+
+    <div class="gl-card gl-in" style="--i:7">
+      <h2 class="gl-card-title">Recent projects</h2>
+      {% if gl_recent_projects %}
+      <ul class="gl-list">
+        {% for p in gl_recent_projects %}
+        <li>
+          <a href="{% url 'admin:gallery_project_change' p.pk %}">
+            <span class="gl-li-main">{{ p.title }}<small>{{ p.location }}</small></span>
+            <span class="gl-chip {% if p.is_published %}gl-chip-won{% else %}gl-chip-lost{% endif %}">{% if p.is_published %}Live{% else %}Hidden{% endif %}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="gl-empty">No projects yet. Click <b>Add project</b> to upload the first one.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <h2 class="gl-section-title gl-in" style="--i:8">All sections</h2>
+  <div class="gl-in" style="--i:9">
+    {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+  </div>
+</div>
+{% endblock %}

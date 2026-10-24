@@ -5,9 +5,23 @@ from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from .admin_dashboard import dashboard_context
+
 admin.site.site_header = 'G-LIGHT admin'
 admin.site.site_title = 'G-LIGHT admin'
 admin.site.index_title = 'Projects, leads and site content'
+
+
+_original_index = admin.site.index
+
+
+def _dashboard_index(request, extra_context=None):
+    extra = dashboard_context()
+    extra.update(extra_context or {})
+    return _original_index(request, extra_context=extra)
+
+
+admin.site.index = _dashboard_index
 
 
 def health(request):
