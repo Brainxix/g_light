@@ -218,7 +218,8 @@ LOGGING = {
         'django.request': {'handlers': ['console'], 'level': 'ERROR', 'propagate': False},
         'django.server': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
         'storages': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
-        'botocore': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
+        # Set BOTO_DEBUG=1 on the server to see exactly what Supabase replies to an upload.
+        'botocore': {'handlers': ['console'], 'level': 'DEBUG' if os.environ.get('BOTO_DEBUG') == '1' else 'WARNING', 'propagate': False},
     },
     'root': {'handlers': ['console'], 'level': 'WARNING'},
 }
