@@ -140,6 +140,8 @@ SUPABASE_S3_KEY_ID = os.environ.get('SUPABASE_S3_KEY_ID', '')
 SUPABASE_S3_SECRET = os.environ.get('SUPABASE_S3_SECRET', '')
 
 if SUPABASE_PROJECT_REF and SUPABASE_BUCKET and SUPABASE_S3_KEY_ID and SUPABASE_S3_SECRET:
+    from botocore.config import Config
+
     STORAGES['default'] = {
         'BACKEND': 'storages.backends.s3.S3Storage',
         'OPTIONS': {
@@ -158,6 +160,11 @@ if SUPABASE_PROJECT_REF and SUPABASE_BUCKET and SUPABASE_S3_KEY_ID and SUPABASE_
             'default_acl': None,
             'signature_version': 's3v4',
             'addressing_style': 'path',
+            # Newer boto3 adds checksum headers that Supabase's S3 service rejects.
+            'client_config': Config(
+                request_checksum_calculation='when_required',
+                response_checksum_validation='when_required',
+            ),
         },
     }
 
@@ -200,3 +207,18 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+
+# --- Logging: print errors (with the full traceback) to the host's log page ---
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'loggers': {
+        'django.request': {'handlers': ['console'], 'level': 'ERROR', 'propagate': False},
+        'django.server': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+        'storages': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
+        'botocore': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
+    },
+    'root': {'handlers': ['console'], 'level': 'WARNING'},
+}
