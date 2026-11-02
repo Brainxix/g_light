@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ProjectModal from '../components/ProjectModal.jsx';
 import ProjectCard from '../components/ProjectCard.jsx';
 import Reveal from '../components/Reveal.jsx';
+import MotionFX from '../components/MotionFX.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
 import CTASection from '../components/CTASection.jsx';
 import { FEATURED_PROJECTS } from '../content.js';
@@ -22,6 +23,7 @@ export default function Projects() {
 
   return (
     <>
+      <MotionFX />
       <section className="page-hero wrap">
         <h1>Completed projects</h1>
         <p>Real systems. Real performance.</p>

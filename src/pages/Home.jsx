@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Reveal from '../components/Reveal.jsx';
+import MotionFX from '../components/MotionFX.jsx';
 import HeroScene from '../components/HeroScene.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
 import ProjectCard from '../components/ProjectCard.jsx';
@@ -33,6 +34,7 @@ export default function Home() {
 
   return (
     <>
+      <MotionFX />
       <section className="hero" onPointerMove={onHeroMove}>
         <HeroScene />
         <div className="hero-inner">

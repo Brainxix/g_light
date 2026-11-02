@@ -2183,3 +2183,158 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .pm-backdrop, .pm, .pm-stage img { animation: none; }
 }
+
+/* ======================================================================
+   v8 — more motion
+   ====================================================================== */
+.fx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 200;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 12px rgba(69, 212, 255, 0.6);
+}
+
+.fx-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+  background: radial-gradient(520px circle at var(--gx, 50%) var(--gy, 50%), rgba(47, 123, 255, 0.09), transparent 65%);
+}
+
+.fx-glow.on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Buttons follow the pointer slightly (translate is separate from transform, so hover lifts still work) */
+  .btn {
+    translate: var(--tx, 0px) var(--ty, 0px);
+    transition: translate 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, background 0.25s, border-color 0.25s;
+  }
+
+  /* Main button breathes so the eye finds it */
+  .hero .btn-primary {
+    animation: fxPulse 3.2s ease-in-out 1.6s infinite;
+  }
+
+  @keyframes fxPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(47, 123, 255, 0.45); }
+    50% { box-shadow: 0 0 0 12px rgba(47, 123, 255, 0); }
+  }
+
+  /* Hero copy arrives in sequence after the headline */
+  .hero .lead,
+  .hero-actions,
+  .hero-areas li {
+    opacity: 0;
+    animation: fxRise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  .hero .lead { animation-delay: 0.85s; }
+  .hero-actions { animation-delay: 1.05s; }
+  .hero-areas li:nth-child(1) { animation-delay: 1.25s; }
+  .hero-areas li:nth-child(2) { animation-delay: 1.35s; }
+  .hero-areas li:nth-child(3) { animation-delay: 1.45s; }
+  .hero-areas li:nth-child(4) { animation-delay: 1.55s; }
+  .hero-areas li:nth-child(5) { animation-delay: 1.65s; }
+  .hero-areas li:nth-child(6) { animation-delay: 1.75s; }
+
+  @keyframes fxRise {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Hero area chips drift gently */
+  .hero-areas li {
+    transition: transform 0.3s ease, color 0.3s, border-color 0.3s;
+  }
+
+  .hero-areas li:hover {
+    transform: translateY(-3px);
+    color: var(--cyan);
+  }
+
+  /* Capability cards: icon floats, card lifts */
+  .cap {
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s, box-shadow 0.35s;
+  }
+
+  .cap:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px -18px rgba(47, 123, 255, 0.45);
+  }
+
+  .cap svg {
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .cap:hover svg {
+    transform: translateY(-3px) scale(1.12) rotate(-4deg);
+  }
+
+  /* Project cards lift; photo badge pops in */
+  .project-card.clickable {
+    transition: opacity 0.6s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s, box-shadow 0.35s;
+  }
+
+  .reveal.visible .project-card.clickable:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 48px -22px rgba(47, 123, 255, 0.5);
+  }
+
+  .photo-badge {
+    animation: fxPop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 0.4s both;
+  }
+
+  @keyframes fxPop {
+    from { opacity: 0; transform: scale(0.6); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Arrow links nudge forward */
+  .view-more,
+  .text-link {
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s;
+  }
+
+  .project-card:hover .view-more,
+  .text-link:hover {
+    transform: translateX(6px);
+  }
+
+  /* Section headings get a line that draws itself when revealed */
+  .reveal .section-head h2 {
+    background-image: linear-gradient(90deg, var(--blue), var(--cyan));
+    background-repeat: no-repeat;
+    background-size: 0% 3px;
+    background-position: 0 100%;
+    padding-bottom: 8px;
+    transition: background-size 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s;
+    display: inline-block;
+  }
+
+  .reveal.visible .section-head h2 {
+    background-size: 64px 3px;
+  }
+
+  /* Whole page fades in on every route change */
+  main {
+    animation: fxPage 0.5s ease both;
+  }
+
+  @keyframes fxPage {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+}
