@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ProjectModal from '../components/ProjectModal.jsx';
 import Reveal from '../components/Reveal.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
 import CTASection from '../components/CTASection.jsx';
@@ -8,6 +9,7 @@ import { useApi } from '../api.js';
 export default function Projects() {
   const { data: items } = useApi('/api/projects/');
   const [filter, setFilter] = useState('all');
+  const [open, setOpen] = useState(null);
 
   // Filter chips come from whatever capabilities the projects actually use.
   const labels = {};
@@ -54,9 +56,25 @@ export default function Projects() {
           <Reveal key={filter}>
             <div className="project-grid">
               {shown.map((p) => (
-                <article className="project-card" key={p.id}>
+                <article
+                  className="project-card clickable"
+                  key={p.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setOpen(p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setOpen(p);
+                    }
+                  }}
+                  aria-label={`View ${p.title}`}
+                >
                   <div className="thumb">
-                    <img src={p.image} alt={p.title} loading="lazy" />
+                    {p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : null}
+                    {p.images && p.images.length > 0 ? (
+                      <span className="photo-badge">{p.images.length + 1} photos</span>
+                    ) : null}
                   </div>
                   <div className="info">
                     <h3>{p.title}</h3>
@@ -66,6 +84,7 @@ export default function Projects() {
                     </p>
                     {p.capacity ? <p className="capacity">{p.capacity}</p> : null}
                     {p.description ? <p className="desc">{p.description}</p> : null}
+                    <span className="view-more">View project &rarr;</span>
                   </div>
                 </article>
               ))}
@@ -73,6 +92,8 @@ export default function Projects() {
           </Reveal>
         </section>
       )}
+
+      {open ? <ProjectModal project={open} onClose={() => setOpen(null)} /> : null}
 
       <CTASection
         heading="Have a power project?"
