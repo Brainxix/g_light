@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ProjectModal from '../components/ProjectModal.jsx';
+import ProjectCard from '../components/ProjectCard.jsx';
 import Reveal from '../components/Reveal.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
 import CTASection from '../components/CTASection.jsx';
@@ -56,37 +57,7 @@ export default function Projects() {
           <Reveal key={filter}>
             <div className="project-grid">
               {shown.map((p) => (
-                <article
-                  className="project-card clickable"
-                  key={p.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setOpen(p)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setOpen(p);
-                    }
-                  }}
-                  aria-label={`View ${p.title}`}
-                >
-                  <div className="thumb">
-                    {p.image ? <img src={p.image} alt={p.title} loading="lazy" /> : null}
-                    {p.images && p.images.length > 0 ? (
-                      <span className="photo-badge">{p.images.length + 1} photos</span>
-                    ) : null}
-                  </div>
-                  <div className="info">
-                    <h3>{p.title}</h3>
-                    <p className="meta">
-                      {[p.location, p.year].filter(Boolean).join(' · ')}
-                      {p.sector_label ? <span>{p.sector_label}</span> : null}
-                    </p>
-                    {p.capacity ? <p className="capacity">{p.capacity}</p> : null}
-                    {p.description ? <p className="desc">{p.description}</p> : null}
-                    <span className="view-more">View project &rarr;</span>
-                  </div>
-                </article>
+                <ProjectCard key={p.id} project={p} onOpen={setOpen} />
               ))}
             </div>
           </Reveal>

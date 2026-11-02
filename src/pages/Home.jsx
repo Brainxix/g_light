@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Reveal from '../components/Reveal.jsx';
 import HeroScene from '../components/HeroScene.jsx';
 import ProjectRow from '../components/ProjectRow.jsx';
+import ProjectCard from '../components/ProjectCard.jsx';
+import ProjectModal from '../components/ProjectModal.jsx';
 import Principles from '../components/Principles.jsx';
 import CountUp from '../components/CountUp.jsx';
 import Circuit from '../components/Circuit.jsx';
@@ -10,19 +13,13 @@ import CTASection from '../components/CTASection.jsx';
 import { useApi } from '../api.js';
 import { HERO, STATEMENT, CAPABILITIES, FEATURED_PROJECTS, METRICS, HOME_CTA } from '../content.js';
 
-const toRow = (p) => ({
-  name: p.title,
-  location: p.location,
-  sector: p.sector_label,
-  description: p.description,
-});
-
 export default function Home() {
   // Featured projects and the numbers come from the admin; the text in
   // content.js is what shows until (or unless) the backend has any.
   const { data: apiProjects } = useApi('/api/projects/?featured=1');
   const { data: apiStats } = useApi('/api/stats/');
-  const featured = apiProjects.length ? apiProjects.map(toRow) : FEATURED_PROJECTS;
+  const [openProject, setOpenProject] = useState(null);
+  const hasAdminProjects = apiProjects.length > 0;
   const stats = apiStats.length ? apiStats : METRICS.items;
 
   // Hero artwork drifts slightly against the pointer.
@@ -78,6 +75,8 @@ export default function Home() {
         </section>
       </Reveal>
 
+      {openProject ? <ProjectModal project={openProject} onClose={() => setOpenProject(null)} /> : null}
+
       <Circuit />
 
       <Reveal>
@@ -107,11 +106,20 @@ export default function Home() {
             <h2>Completed projects</h2>
             <p>Real systems. Real performance.</p>
           </div>
-          <div className="proj-list">
-            {featured.map((p) => (
-              <ProjectRow key={p.name} {...p} />
-            ))}
-          </div>
+          {hasAdminProjects ? (
+            <div className="project-grid">
+              {apiProjects.map((p) => (
+                <ProjectCard key={p.id} project={p} onOpen={setOpenProject} />
+              ))}
+            </div>
+          ) : (
+            // Until projects are added in the admin (or if the backend is offline), show the written list.
+            <div className="proj-list">
+              {FEATURED_PROJECTS.map((p) => (
+                <ProjectRow key={p.name} {...p} />
+              ))}
+            </div>
+          )}
           <div className="proj-foot">
             <Link to="/projects" className="text-link">View all projects →</Link>
           </div>
